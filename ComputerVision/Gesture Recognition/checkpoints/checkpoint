@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/pratik/Documents/Akshay/Project/Working_code/2.2/checkpoints/non_pool.model"
+all_model_checkpoint_paths: "/home/pratik/Documents/Akshay/Project/Working_code/2.2/checkpoints/non_pool.model"
