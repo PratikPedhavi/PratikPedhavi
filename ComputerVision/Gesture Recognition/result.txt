@@ -1,4 +1,0 @@
-gold, pred
-deaf deaf
-enjoy enjoy
-enjoy enjoy

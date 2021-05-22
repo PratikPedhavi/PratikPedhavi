@@ -30,31 +30,35 @@ def get_data(input_data_dump, num_frames_per_video, labels, ifTrain):
             # frameCount = frame[2]
 
             # Convert our labels into binary.
-            actual = labels[actual]
+            if ifTrain:
+                actual = labels[actual]
 
             # Add to the queue.
             if len(temp_list) == num_frames_per_video - 1:
                 temp_list.append(features)
                 flat = list(temp_list)
                 X.append(np.array(flat))
-                y.append(actual)
+                if ifTrain:
+                    y.append(actual)
                 temp_list.clear()
             else:
                 temp_list.append(features)
                 continue
-
-    print("Class Name\tNumeric Label")
-    for key in labels:
-        print("%s\t\t%d" % (key, labels[key]))
+    
+    if ifTrain:
+        print("Class Name\tNumeric Label")
+        for key in labels:
+            print("%s\t\t%d" % (key, labels[key]))
 
     # Numpy.
     X = np.array(X)
-    y = np.array(y)
-
+    
     print("Dataset shape: ", X.shape)
 
     # One-hot encoded categoricals.
-    y = to_categorical(y, len(labels))
+    if ifTrain:
+        y = np.array(y)
+        y = to_categorical(y, len(labels))
 
     # Split into train and test.
     if ifTrain:

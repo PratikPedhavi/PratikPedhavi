@@ -100,7 +100,7 @@ def predict_on_frames(frames_folder, model_file, input_layer, output_layer, batc
                 predictions.extend(pred)
 
             except KeyboardInterrupt:
-                print("You quit with ctrl+c")
+                print("You quit with ctrl+c")   
                 sys.exit()
 
             except Exception as e:
@@ -112,6 +112,42 @@ def predict_on_frames(frames_folder, model_file, input_layer, output_layer, batc
                     sys.exit()
     return predictions
 
+def predict_on_frames_test(frames_folder, model_file, input_layer, output_layer, batch_size):
+    input_height = 299
+    input_width = 299
+    input_mean = 0
+    input_std = 255
+    batch_size = batch_size
+    graph = load_graph(model_file)
+
+    labels_in_dir = os.listdir(frames_folder)
+    frames = [each for each in os.walk(frames_folder) if os.path.basename(each[0]) in labels_in_dir]
+
+    predictions = []
+    for each in frames:
+        label = each[0]
+        print("Predicting on frame of %s\n" % (label))
+        for i in tqdm(range(0, len(each[2]), batch_size), ascii=True):
+            batch = each[2][i:i + batch_size]
+            try:
+                batch = [os.path.join(label, frame) for frame in batch]
+                frames_tensors = read_tensor_from_image_file(batch, input_height=input_height, input_width=input_width, input_mean=input_mean, input_std=input_std)
+                pred = predict(graph, frames_tensors, input_layer, output_layer)
+                pred = [[each.tolist(), os.path.basename(label)] for each in pred]
+                predictions.extend(pred)
+
+            except KeyboardInterrupt:
+                print("You quit with ctrl+c")   
+                sys.exit()
+
+            except Exception as e:
+                print("Error making prediction: %s" % (e))
+                x = input("\nDo You Want to continue on other samples: y/n")
+                if x.lower() == 'y':
+                    continue
+                else:
+                    sys.exit()
+    return predictions
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -1,3 +1,0 @@
-from rnn_eval import *
-
-main("predicted-frames-GlobalPool-test.pkl", 201, 32, "retrained_labels.txt", "pool.model")
